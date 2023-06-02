@@ -55,7 +55,14 @@ public class UserController {
 
     @PutMapping("/update/{id}")
     public ResponseEntity<UserModel> updateUser(@PathVariable("id") Long id, @RequestBody UserRequestModel user) {
-        UserModel updatedUser = userService.updateUser(id, user);
+        UserModel updatedUser;
+
+        try {
+            updatedUser = userService.updateUser(id, user);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
         if (updatedUser != null) {
             return new ResponseEntity<>(updatedUser, HttpStatus.OK);
         } else {
