@@ -10,12 +10,13 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.boot.test.context.SpringBootTest;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -106,5 +107,40 @@ public class UserServiceTest {
 
         // Verifica que la funcion findAll fue utilizada
         verify(userRepository).findAll();
+    }
+
+    @Test
+    public void testUpdateUser() {
+        // Retorna el usuario esperado
+        when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user1));
+        // Retorna el objeto user1
+        when(userRepository.save(any(UserModel.class))).thenReturn(user1);
+
+        // Simula la operación del controlador llamando al service para actualizar el usuario
+        UserModel updatedUser = userService.updateUser(1L, createUserRequest1);
+
+        // Verifica que no sea null
+        assertNotNull(updatedUser);
+
+        // Compara datos del usuario
+        assertEquals(user1.getId(), updatedUser.getId());
+        assertEquals(createUserRequest1.getNombre(), updatedUser.getNombre());
+        assertEquals(createUserRequest1.getApellido(), updatedUser.getApellido());
+        assertEquals(createUserRequest1.getCorreoElectronico(), updatedUser.getCorreoElectronico());
+
+        verify(userRepository).findById(1L);
+        verify(userRepository).save(any(UserModel.class));
+    }
+
+    @Test
+    public void testDeleteUser() {
+        // Retorna el usuario con id 1
+        when(userRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(user1));
+
+        // Simula la operación del controlador llamando al service para eliminar el usuario
+        userService.deleteUser(1L);
+
+        verify(userRepository).findById(1L);
+        verify(userRepository).deleteById(1L);
     }
 }
