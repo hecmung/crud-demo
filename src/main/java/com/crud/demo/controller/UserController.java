@@ -21,6 +21,7 @@ public class UserController {
         this.userService = userService;
     }
 
+    // Funcion para crear usuario
     @PostMapping("/create")
     public ResponseEntity<UserModel> createUser(@RequestBody UserRequestModel userRequestModel) {
         UserModel createdUser;
@@ -37,12 +38,14 @@ public class UserController {
         }
     }
 
+    // Funcion para obtener todos los usuarios
     @GetMapping("/get-all")
     public ResponseEntity<List<UserModel>> getAllUsers() {
         List<UserModel> users = userService.getAllUsers();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
+    // Funcion para obtener un usuario, lo busca por el id
     @GetMapping("/get/{id}")
     public ResponseEntity<UserModel> getUserById(@PathVariable("id") Long id) {
         UserModel user = userService.getUserById(id);
@@ -53,6 +56,7 @@ public class UserController {
         }
     }
 
+    // Funcion para actualizar un usuario, lo busca por el id
     @PutMapping("/update/{id}")
     public ResponseEntity<UserModel> updateUser(@PathVariable("id") Long id, @RequestBody UserRequestModel user) {
         UserModel updatedUser;
@@ -70,6 +74,7 @@ public class UserController {
         }
     }
 
+    // Funcion para eliminar un usuario, lo busca por el id
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id) {
         boolean deleted = userService.deleteUser(id);

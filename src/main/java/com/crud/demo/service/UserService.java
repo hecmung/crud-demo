@@ -21,15 +21,18 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    // Funcion para obtener todos los usuarios
     public List<UserModel> getAllUsers() {
         return userRepository.findAll();
     }
 
+    // Funcion para obtener un usuario, lo busca por el id
     public UserModel getUserById(Long id) {
         Optional<UserModel> optionalUser = userRepository.findById(id);
         return optionalUser.orElse(null);
     }
 
+    // Funcion para crear usuario
     public UserModel createUser(UserRequestModel userRequestModel) {
         validateRequest(userRequestModel);
 
@@ -41,6 +44,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    // Funcion para actualizar un usuario, lo busca por el id
     public UserModel updateUser(Long id, UserRequestModel user) {
         validateRequest(user);
 
@@ -57,6 +61,7 @@ public class UserService {
         }
     }
 
+    // Funcion para eliminar un usuario, lo busca por el id
     public boolean deleteUser(Long id) {
         Optional<UserModel> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
@@ -78,7 +83,7 @@ public class UserService {
         }
     }
 
-    //Valida si el request es nulo
+    // Valida si el request es nulo
     public void validateRequest(UserRequestModel userRequestModel) {
         if(userRequestModel == null)
             throw new RuntimeException("Request nulo");
