@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpServerErrorException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -20,20 +21,55 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<UserModel> createUser(@RequestBody UserRequestModel userRequestModel) {
-        UserModel createdUser = new UserModel();
+        UserModel createdUser;
 
         try {
             createdUser = userService.createUser(userRequestModel);
+            return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
         } catch (HttpServerErrorException httpServerErrorException) {
             httpServerErrorException.printStackTrace();
-            return new ResponseEntity<>(createdUser, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>(createdUser, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
+    }
 
-        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+    @GetMapping("/get-all")
+    public ResponseEntity<List<UserModel>> getAllUsers() {
+        List<UserModel> users = userService.getAllUsers();
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @GetMapping("/get/{id}")
+    public ResponseEntity<UserModel> getUserById(@PathVariable("id") Long id) {
+        UserModel user = userService.getUserById(id);
+        if (user != null) {
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<UserModel> updateUser(@PathVariable("id") Long id, @RequestBody UserRequestModel user) {
+        UserModel updatedUser = userService.updateUser(id, user);
+        if (updatedUser != null) {
+            return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id) {
+        boolean deleted = userService.deleteUser(id);
+        if (deleted) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }
