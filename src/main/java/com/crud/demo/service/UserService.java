@@ -31,6 +31,8 @@ public class UserService {
     }
 
     public UserModel createUser(UserRequestModel userRequestModel) {
+        validateRequest(userRequestModel);
+
         UserModel user = new UserModel();
         user.setNombre(userRequestModel.getNombre());
         user.setApellido(userRequestModel.getApellido());
@@ -40,6 +42,8 @@ public class UserService {
     }
 
     public UserModel updateUser(Long id, UserRequestModel user) {
+        validateRequest(user);
+
         Optional<UserModel> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
             UserModel existingUser = optionalUser.get();
@@ -72,5 +76,11 @@ public class UserService {
         } catch (DateTimeParseException e) {
             throw new RuntimeException(e.getCause());
         }
+    }
+
+    //Valida si el request es nulo
+    public void validateRequest(UserRequestModel userRequestModel) {
+        if(userRequestModel == null)
+            throw new RuntimeException("Request nulo");
     }
 }
