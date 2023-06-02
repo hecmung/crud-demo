@@ -25,7 +25,8 @@ public class UserModel {
     public UserModel() {
     }
 
-    public UserModel(String nombre, String apellido, String correoElectronico, LocalDate fechaNacimiento) {
+    public UserModel(Long id, String nombre, String apellido, String correoElectronico, LocalDate fechaNacimiento) {
+        this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
         this.correoElectronico = correoElectronico;
